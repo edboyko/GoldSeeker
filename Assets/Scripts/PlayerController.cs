@@ -6,7 +6,7 @@ public class PlayerController : MonoBehaviour {
     private bool isJumping = false;
     private Rigidbody2D playerRigidBody;
     private Animator playerAnimator;
-    private Player player;    
+    private Player player;
 
     void Start ()
     {
@@ -42,6 +42,7 @@ public class PlayerController : MonoBehaviour {
             playerAnimator.SetTrigger("jumped");
             isJumping = true;
         }
+        transform.rotation = Quaternion.identity;
 	}
 
     void OnCollisionEnter2D()
