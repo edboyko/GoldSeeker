@@ -3,71 +3,64 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour {
 
-    private bool isJumping = false;
     private Rigidbody2D playerRigidBody;
     private Animator playerAnimator;
     private Player player;
-    private CircleCollider2D attackCollider;
+
+    private float direction;
+    private bool grounded = true;
 
     void Start ()
     {
         player = GetComponent<Player>();
         playerRigidBody = GetComponent<Rigidbody2D>();
         playerAnimator = GetComponent<Animator>();
-        attackCollider = GetComponent<CircleCollider2D>();
     }    
 	
 	void Update () {
-        if (Input.GetKey(KeyCode.RightArrow))
+        if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.LeftArrow))
         {
-            transform.position += Vector3.right * player.speed * Time.deltaTime;
+            if (Input.GetKey(KeyCode.RightArrow))
+            {
+                direction = 1;
+            }
+            else if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                direction = -1;
+            }
             playerAnimator.SetBool("playerWalking", true);
-            transform.localScale = new Vector3 (1,1,1);
+            transform.localScale = new Vector3(direction, 1, 1);
+            transform.position += Vector3.right * direction * player.speed * Time.deltaTime;
         }
-        else if (Input.GetKeyUp(KeyCode.RightArrow))
+        else if(Input.GetKeyUp(KeyCode.RightArrow) || Input.GetKeyUp(KeyCode.LeftArrow))
         {
             playerAnimator.SetBool("playerWalking", false);
         }
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            transform.position += Vector3.left * player.speed * Time.deltaTime;
-            playerAnimator.SetBool("playerWalking", true);
-            transform.localScale = new Vector3(-1, 1, 1);
-        }
-        else if (Input.GetKeyUp(KeyCode.LeftArrow))
-        {
-            playerAnimator.SetBool("playerWalking", false);
-        }
-        if (Input.GetKeyDown(KeyCode.UpArrow) && !isJumping)
+
+        if (Input.GetKeyDown(KeyCode.UpArrow) && grounded)
         {
             playerRigidBody.velocity = Vector3.up * player.jumpForce;
             playerAnimator.SetTrigger("jumped");
-            isJumping = true;
+            grounded = false;
         }
+
         if (Input.GetKey(KeyCode.Space))
         {
+            player.Attack(true);
             playerAnimator.SetBool("playerAttacking", true);
-            attackCollider.enabled = true;
         }
         else if (Input.GetKeyUp(KeyCode.Space))
         {
+            player.Attack(false);
             playerAnimator.SetBool("playerAttacking", false);
-            attackCollider.enabled = false;
         }
         transform.rotation = Quaternion.identity;
 	}
 
     void OnCollisionEnter2D()
     {
-        isJumping = false;
+        grounded = true;
     }
 
-    void OnTriggerStay2D(Collider2D col)
-    {
-        Enemy enemy = col.gameObject.GetComponent<Enemy>();
-        if (enemy)
-        {
-            enemy.health -= player.damage * Time.deltaTime;
-        }
-    }
+
 }
