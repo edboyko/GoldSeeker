@@ -3,9 +3,13 @@ using System.Collections;
 
 public class Enemy : MonoBehaviour
 {
+    // Moving variables
     private float destinationRight;
     private float destinationLeft;
     private float direction = 1;
+
+    // Property variables
+    public float health = 100;
 
     public float oneWayLength = 4;
     public float speed = 2;
@@ -30,5 +34,14 @@ public class Enemy : MonoBehaviour
         }
         transform.position += new Vector3(speed * Time.deltaTime * direction, 0, 0);
         transform.rotation = Quaternion.identity;
+        Death();
+    }
+
+    void Death()
+    {
+        if (health <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 }

@@ -7,12 +7,14 @@ public class PlayerController : MonoBehaviour {
     private Rigidbody2D playerRigidBody;
     private Animator playerAnimator;
     private Player player;
+    private CircleCollider2D attackCollider;
 
     void Start ()
     {
         player = GetComponent<Player>();
         playerRigidBody = GetComponent<Rigidbody2D>();
         playerAnimator = GetComponent<Animator>();
+        attackCollider = GetComponent<CircleCollider2D>();
     }    
 	
 	void Update () {
@@ -42,11 +44,30 @@ public class PlayerController : MonoBehaviour {
             playerAnimator.SetTrigger("jumped");
             isJumping = true;
         }
+        if (Input.GetKey(KeyCode.Space))
+        {
+            playerAnimator.SetBool("playerAttacking", true);
+            attackCollider.enabled = true;
+        }
+        else if (Input.GetKeyUp(KeyCode.Space))
+        {
+            playerAnimator.SetBool("playerAttacking", false);
+            attackCollider.enabled = false;
+        }
         transform.rotation = Quaternion.identity;
 	}
 
     void OnCollisionEnter2D()
     {
         isJumping = false;
+    }
+
+    void OnTriggerStay2D(Collider2D col)
+    {
+        Enemy enemy = col.gameObject.GetComponent<Enemy>();
+        if (enemy)
+        {
+            enemy.health -= player.damage * Time.deltaTime;
+        }
     }
 }
