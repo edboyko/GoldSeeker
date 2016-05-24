@@ -68,4 +68,12 @@ public class Enemy : MonoBehaviour
             animator.SetBool("attacking", false);
         }
     }
+
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        if(col.gameObject == GameObject.FindGameObjectWithTag("Wall"))
+        {
+            direction = direction * -1;
+        }
+    }
 }
