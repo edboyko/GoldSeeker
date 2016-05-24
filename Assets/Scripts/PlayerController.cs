@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour {
     private Player player;
 
     private float direction;
-    private bool grounded = true;
+    public bool grounded = true;
 
     void Start ()
     {
@@ -28,31 +28,78 @@ public class PlayerController : MonoBehaviour {
             {
                 direction = -1;
             }
-            playerAnimator.SetBool("playerWalking", true);
             transform.localScale = new Vector3(direction, 1, 1);
             transform.position += Vector3.right * direction * player.speed * Time.deltaTime;
+            if(player.isBat == false)
+            {
+                playerAnimator.SetBool("playerWalking", true);
+            }
+            else
+            {
+                playerAnimator.SetBool("batFlying", true);
+            }
         }
         else if(Input.GetKeyUp(KeyCode.RightArrow) || Input.GetKeyUp(KeyCode.LeftArrow))
         {
-            playerAnimator.SetBool("playerWalking", false);
+            if(player.isBat == false)
+            {
+                playerAnimator.SetBool("playerWalking", false);
+            }
+            else
+            {
+                playerAnimator.SetBool("batFlying", false);
+            }
         }
 
-        if (Input.GetKeyDown(KeyCode.UpArrow) && grounded)
+        if (player.isBat == false)
         {
-            playerRigidBody.velocity = Vector3.up * player.jumpForce;
-            playerAnimator.SetTrigger("jumped");
-            grounded = false;
+            if (Input.GetKeyDown(KeyCode.UpArrow) && grounded)
+            {
+                playerRigidBody.velocity = Vector3.up * player.jumpForce;
+                playerAnimator.SetTrigger("jumped");
+                grounded = false;
+            }
+            if (Input.GetKey(KeyCode.Space))
+            {
+                player.Attack(true);
+                playerAnimator.SetBool("playerAttacking", true);
+            }
+            else if (Input.GetKeyUp(KeyCode.Space))
+            {
+                player.Attack(false);
+                playerAnimator.SetBool("playerAttacking", false);
+            }
+        }
+        else
+        {
+            if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow))
+            {
+                playerAnimator.SetBool("batFlying", true);
+                if (Input.GetKey(KeyCode.UpArrow))
+                {
+                    transform.position += Vector3.up * player.speed * Time.deltaTime;
+                }
+                else if (Input.GetKey(KeyCode.DownArrow))
+                {
+                    transform.position += Vector3.down * player.speed * Time.deltaTime;
+                }
+            }
+            else if(Input.GetKeyUp(KeyCode.UpArrow) || Input.GetKeyUp(KeyCode.DownArrow))
+            {
+                playerAnimator.SetBool("batFlying", false);
+            }
         }
 
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.B) && grounded)
         {
-            player.Attack(true);
-            playerAnimator.SetBool("playerAttacking", true);
-        }
-        else if (Input.GetKeyUp(KeyCode.Space))
-        {
-            player.Attack(false);
-            playerAnimator.SetBool("playerAttacking", false);
+            if(player.isBat == false)
+            {
+                player.TransformToBat(true, player.batGravityScale);
+            }
+            else
+            {
+                player.TransformToBat(false, 1);
+            }
         }
         transform.rotation = Quaternion.identity;
 	}

@@ -3,15 +3,20 @@ using System.Collections;
 
 public class Player : MonoBehaviour {
 
-    public float health, jumpForce, speed, playerDamage;
+    public float health, jumpForce, speed, playerDamage, batGravityScale;
 
     private CircleCollider2D attackCollider;
-    private bool playerAttacking = false;
     private GameObject currentTarget;
+    private Animator animator;
+
+    private bool playerAttacking = false;
+
+    public bool isBat = false;    
 
     void Start()
     {
         attackCollider = GetComponent<CircleCollider2D>();
+        animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -19,6 +24,12 @@ public class Player : MonoBehaviour {
 
     }
 
+    public void TransformToBat (bool trueOrFalse, float gravityScale)
+    {
+        animator.SetBool("isBat", trueOrFalse);
+        isBat = trueOrFalse;
+        GetComponent<Rigidbody2D>().gravityScale = gravityScale;
+    }
     public void Attack (bool isAttacking)
     {
         attackCollider.enabled = isAttacking;
