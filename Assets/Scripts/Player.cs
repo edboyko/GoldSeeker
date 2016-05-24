@@ -1,13 +1,18 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class Player : MonoBehaviour {
 
     public float health, jumpForce, speed, playerDamage, batGravityScale;
 
+    private float mana = 100;
+    public float manaDrainRate = 20;
+
     private CircleCollider2D attackCollider;
     private GameObject currentTarget;
     private Animator animator;
+    private Slider manaSlider;
 
     private bool playerAttacking = false;
 
@@ -17,11 +22,20 @@ public class Player : MonoBehaviour {
     {
         attackCollider = GetComponent<CircleCollider2D>();
         animator = GetComponent<Animator>();
+        manaSlider = GameObject.Find("ManaSlider").GetComponent<Slider>();
     }
 
     void Update()
     {
-
+        if (isBat)
+        {
+            mana = mana - manaDrainRate * Time.deltaTime;
+        }
+        manaSlider.value = mana;
+        if(mana <= 0)
+        {
+            TransformToBat(false, 1);
+        }
     }
 
     public void TransformToBat (bool trueOrFalse, float gravityScale)

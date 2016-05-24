@@ -102,6 +102,7 @@ public class PlayerController : MonoBehaviour {
             }
         }
         transform.rotation = Quaternion.identity;
+        transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, -5, 5), 0);
 	}
 
     void OnCollisionEnter2D()
