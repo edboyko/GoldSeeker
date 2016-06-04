@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour {
             }
             transform.localScale = new Vector3(direction, 1, 1);
             transform.position += Vector3.right * direction * player.speed * Time.deltaTime;
-            if(player.isBat == false)
+            if(!player.isBat)
             {
                 playerAnimator.SetBool("playerWalking", true);
             }
@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour {
         }
         else if(Input.GetKeyUp(KeyCode.RightArrow) || Input.GetKeyUp(KeyCode.LeftArrow))
         {
-            if(player.isBat == false)
+            if(!player.isBat)
             {
                 playerAnimator.SetBool("playerWalking", false);
             }
@@ -51,7 +51,7 @@ public class PlayerController : MonoBehaviour {
             }
         }
 
-        if (player.isBat == false)
+        if (!player.isBat)
         {
             if (Input.GetKeyDown(KeyCode.UpArrow) && grounded)
             {
@@ -92,7 +92,7 @@ public class PlayerController : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.B) && grounded)
         {
-            if(player.isBat == false)
+            if(!player.isBat)
             {
                 player.TransformToBat(true, player.batGravityScale);
             }

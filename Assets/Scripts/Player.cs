@@ -8,6 +8,7 @@ public class Player : MonoBehaviour {
 
     private float mana = 100;
     public float manaDrainRate = 20;
+    public float manaRegen = 5;
 
     private CircleCollider2D attackCollider;
     private GameObject currentTarget;
@@ -30,6 +31,10 @@ public class Player : MonoBehaviour {
         if (isBat)
         {
             mana = mana - manaDrainRate * Time.deltaTime;
+        }
+        else if (!isBat && mana < 100)
+        {
+            mana = mana + manaRegen * Time.deltaTime;
         }
         manaSlider.value = mana;
         if(mana <= 0)
@@ -61,7 +66,11 @@ public class Player : MonoBehaviour {
     }
     void OnTriggerExit2D (Collider2D col)
     {
-        currentTarget = null;
+        Enemy enemy = col.gameObject.GetComponent<Enemy>();
+        if(enemy)
+        {
+            currentTarget = null;
+        }
     }
 
     void Attack(GameObject target)
