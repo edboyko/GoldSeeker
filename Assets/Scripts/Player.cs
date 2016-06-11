@@ -17,7 +17,7 @@ public class Player : MonoBehaviour {
 
     private bool playerAttacking = false;
 
-    public bool isBat = false;    
+    public bool isBat = false;
 
     void Start()
     {

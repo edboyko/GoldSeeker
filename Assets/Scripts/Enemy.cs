@@ -6,8 +6,9 @@ public class Enemy : MonoBehaviour
     // Moving variables
     private float destinationRight;
     private float destinationLeft;
-    private float direction = 1;
-    private float currentSpeed;
+
+    public float Direction { get; set; }
+    public float CurrentSpeed { get; set; }
 
     private Animator animator;
 
@@ -20,24 +21,25 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
-        currentSpeed = defaultSpeed;
+        CurrentSpeed = defaultSpeed;
         animator = GetComponent<Animator>();
         destinationRight = transform.position.x + oneWayLength;
         destinationLeft = transform.position.x - oneWayLength;
+        Direction = 1;
     }
     
     void Update()
     {
         if (transform.position.x >= destinationRight)
         {
-            direction = -1;
+            Direction = -1;
         }
         if (transform.position.x <= destinationLeft)
         {
-            direction = 1;
+            Direction = 1;
         }
-        transform.position += new Vector3(currentSpeed * Time.deltaTime * direction, 0, 0);
-        transform.localScale = new Vector3(direction, 1, 1);
+        transform.position += new Vector3(CurrentSpeed * Time.deltaTime * Direction, 0, 0);
+        transform.localScale = new Vector3(Direction, 1, 1);
         transform.rotation = Quaternion.identity;
         DieIfHealthZero();
     }
@@ -73,7 +75,7 @@ public class Enemy : MonoBehaviour
     {
         if(col.gameObject == GameObject.FindGameObjectWithTag("Wall"))
         {
-            direction = direction * -1;
+            Direction = Direction * -1;
         }
     }
 }
