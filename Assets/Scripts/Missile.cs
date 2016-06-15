@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class Missile : MonoBehaviour {
 
@@ -31,7 +30,6 @@ public class Missile : MonoBehaviour {
         {
             Destroy(gameObject);
             player.health -= damage;
-            Debug.Log("Player hit for " + damage + " damage.");
         }
     }
 }

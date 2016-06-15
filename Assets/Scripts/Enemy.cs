@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
@@ -10,19 +10,21 @@ public class Enemy : MonoBehaviour
     public float Direction { get; set; }
     public float CurrentSpeed { get; set; }
 
+    // Component variables
     private Animator animator;
+    private Slider healthSlider;
 
     // Property variables
     public float health = 100;
-
     public float oneWayLength = 4;
     public float defaultSpeed = 2;
     public float damage = 15;
-
+    
     void Start()
     {
         CurrentSpeed = defaultSpeed;
         animator = GetComponent<Animator>();
+        healthSlider = GetComponentInChildren<Slider>();
         destinationRight = transform.position.x + oneWayLength;
         destinationLeft = transform.position.x - oneWayLength;
         Direction = 1;
@@ -30,6 +32,7 @@ public class Enemy : MonoBehaviour
     
     void Update()
     {
+        healthSlider.value = health;
         if (transform.position.x >= destinationRight)
         {
             Direction = -1;

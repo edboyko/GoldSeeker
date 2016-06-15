@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 
 public class Player : MonoBehaviour {
 
@@ -14,6 +13,7 @@ public class Player : MonoBehaviour {
     private GameObject currentTarget;
     private Animator animator;
     private Slider manaSlider;
+    private Slider healthSlider;
 
     private bool playerAttacking = false;
 
@@ -24,6 +24,7 @@ public class Player : MonoBehaviour {
         attackCollider = GetComponent<CircleCollider2D>();
         animator = GetComponent<Animator>();
         manaSlider = GameObject.Find("ManaSlider").GetComponent<Slider>();
+        healthSlider = GameObject.Find("HealthSlider").GetComponent<Slider>();
     }
 
     void Update()
@@ -36,8 +37,11 @@ public class Player : MonoBehaviour {
         {
             mana = mana + manaRegen * Time.deltaTime;
         }
+
         manaSlider.value = mana;
-        if(mana <= 0)
+        healthSlider.value = health;
+
+        if (mana <= 0)
         {
             TransformToBat(false, 1);
         }

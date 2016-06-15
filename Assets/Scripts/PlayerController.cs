@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class PlayerController : MonoBehaviour {
 
@@ -102,7 +101,7 @@ public class PlayerController : MonoBehaviour {
             }
         }
         transform.rotation = Quaternion.identity;
-        transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, -5, 5), 0);
+        transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, -30, 5), 0);
 	}
 
     void OnCollisionEnter2D()
