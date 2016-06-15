@@ -22,17 +22,20 @@ public class Enemy : MonoBehaviour
     
     void Start()
     {
-        CurrentSpeed = defaultSpeed;
         animator = GetComponent<Animator>();
         healthSlider = GetComponentInChildren<Slider>();
+
+        CurrentSpeed = defaultSpeed;
+        Direction = 1;
+
         destinationRight = transform.position.x + oneWayLength;
         destinationLeft = transform.position.x - oneWayLength;
-        Direction = 1;
     }
     
     void Update()
     {
         healthSlider.value = health;
+
         if (transform.position.x >= destinationRight)
         {
             Direction = -1;
@@ -41,9 +44,11 @@ public class Enemy : MonoBehaviour
         {
             Direction = 1;
         }
+
         transform.position += new Vector3(CurrentSpeed * Time.deltaTime * Direction, 0, 0);
         transform.localScale = new Vector3(Direction, 1, 1);
         transform.rotation = Quaternion.identity;
+
         DieIfHealthZero();
     }
 
@@ -51,8 +56,13 @@ public class Enemy : MonoBehaviour
     {
         if (health <= 0)
         {
-            Destroy(gameObject);
+            animator.SetTrigger("die");
         }
+    }
+
+    void DestroyObject()
+    {
+        Destroy(gameObject);
     }
 
     void OnTriggerStay2D(Collider2D col)

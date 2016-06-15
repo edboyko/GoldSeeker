@@ -7,6 +7,7 @@ public class Missile : MonoBehaviour {
 
     public float damage = 5;
     public float speed = 15;
+    public float livingTime = 3;
 
     
 	void Start () {
@@ -17,7 +18,12 @@ public class Missile : MonoBehaviour {
     void Update()
     {
         transform.position += new Vector3(speed, 0) * Time.deltaTime * enemy.Direction;
-        if(Time.time - spawnTime >= 3)
+        DestroyAfter(livingTime);
+    }
+
+    void DestroyAfter(float flyingTime)
+    {
+        if (Time.time - spawnTime >= flyingTime)
         {
             Destroy(gameObject);
         }
@@ -28,8 +34,8 @@ public class Missile : MonoBehaviour {
         Player player = col.gameObject.GetComponent<Player>();
         if (player)
         {
-            Destroy(gameObject);
             player.health -= damage;
+            Destroy(gameObject);
         }
     }
 }

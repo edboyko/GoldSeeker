@@ -19,7 +19,7 @@ public class EnemyMage : MonoBehaviour {
 	}
 	
 	void Update () {
-        if (DistanceBetweenEnemyAndPlayer()[0] && DistanceBetweenEnemyAndPlayer()[1])
+        if (PlayerWithinRange()[0] && PlayerWithinRange()[1])
         {
             enemy.CurrentSpeed = 0;
             playerIsNear = true;
@@ -54,10 +54,10 @@ public class EnemyMage : MonoBehaviour {
         ball.transform.SetParent(transform);
     }
 
-    bool[] DistanceBetweenEnemyAndPlayer()
+    bool[] PlayerWithinRange()
     {
-        bool xDistance = Mathf.Abs(player.transform.position.x - transform.position.x) <= 4;
-        bool yDistance = Mathf.Abs(player.transform.position.y - transform.position.y) <= 1;
+        bool xDistance = Mathf.Abs(player.transform.position.x - transform.position.x) <= xAttackThreshold;
+        bool yDistance = Mathf.Abs(player.transform.position.y - transform.position.y) <= yAttackThreshold;
         return new bool[2] {xDistance, yDistance};
     }    
 }
