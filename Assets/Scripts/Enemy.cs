@@ -19,6 +19,10 @@ public class Enemy : MonoBehaviour
     public float oneWayLength = 4;
     public float defaultSpeed = 2;
     public float damage = 15;
+
+    public GameObject dyingAnimation;
+
+    private Player target;
     
     void Start()
     {
@@ -56,7 +60,10 @@ public class Enemy : MonoBehaviour
     {
         if (health <= 0)
         {
-            animator.SetTrigger("die");
+            GameObject animationInstance = Instantiate(dyingAnimation) as GameObject;
+            animationInstance.transform.position = transform.position;
+            animationInstance.transform.localScale = transform.localScale;
+            Destroy(gameObject);
         }
     }
 
@@ -70,17 +77,33 @@ public class Enemy : MonoBehaviour
         Player player = col.gameObject.GetComponent<Player>();
         if (player)
         {
-            player.health -= damage * Time.deltaTime;
+            target = player;
+            CurrentSpeed = 0;
             animator.SetBool("attacking", true);
         }
+        else
+        {
+            target = null;
+            animator.SetBool("attacking", false);
+        }
     }
+
+    public void EnemyDealDamage()
+    {
+        if (target)
+        {
+            target.health -= damage;
+        }
+    }
+
     void OnTriggerExit2D(Collider2D col)
     {
-        BoxCollider2D playerCol = col.gameObject.GetComponent<BoxCollider2D>();
         Player player = col.gameObject.GetComponent<Player>();
-        if (player && playerCol)
+        if (player)
         {
+            target = null;
             animator.SetBool("attacking", false);
+            CurrentSpeed = defaultSpeed;
         }
     }
 

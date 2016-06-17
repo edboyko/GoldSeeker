@@ -9,19 +9,21 @@ public class Player : MonoBehaviour {
     public float manaDrainRate = 20;
     public float manaRegen = 5;
 
-    private CircleCollider2D attackCollider;
+    public GameObject dyingAnimation;
+    
     private GameObject currentTarget;
     private Animator animator;
     private Slider manaSlider;
-    private Slider healthSlider;
-
-    private bool playerAttacking = false;
+    private Slider healthSlider;    
 
     public bool isBat = false;
 
+    public bool PlayerAttacking { get; set; }
+
+    private Enemy victim;
+
     void Start()
     {
-        attackCollider = GetComponent<CircleCollider2D>();
         animator = GetComponent<Animator>();
         manaSlider = GameObject.Find("ManaSlider").GetComponent<Slider>();
         healthSlider = GameObject.Find("HealthSlider").GetComponent<Slider>();
@@ -45,6 +47,11 @@ public class Player : MonoBehaviour {
         {
             TransformToBat(false, 1);
         }
+        if (PlayerAttacking)
+        {
+            victim.health -= playerDamage * Time.deltaTime;
+        }
+        DieIfHealthZero();
     }
 
     public void TransformToBat (bool trueOrFalse, float gravityScale)
@@ -53,19 +60,13 @@ public class Player : MonoBehaviour {
         isBat = trueOrFalse;
         GetComponent<Rigidbody2D>().gravityScale = gravityScale;
     }
-    public void Attack (bool isAttacking)
-    {
-        attackCollider.enabled = isAttacking;
-        playerAttacking = isAttacking;
-    }
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        GameObject victim = col.gameObject;
-        Enemy enemy = victim.GetComponent<Enemy>();
-        if (enemy && playerAttacking)
+        Enemy enemy = col.gameObject.GetComponent<Enemy>();
+        if (enemy)
         {
-            Attack(victim);
+            victim = enemy;
         }
     }
     void OnTriggerExit2D (Collider2D col)
@@ -73,20 +74,19 @@ public class Player : MonoBehaviour {
         Enemy enemy = col.gameObject.GetComponent<Enemy>();
         if(enemy)
         {
-            currentTarget = null;
+            victim = null;
         }
     }
 
-    void Attack(GameObject target)
+    void DieIfHealthZero()
     {
-        currentTarget = target;
-    }
-
-    void DealDamage()
-    {
-        if (currentTarget)
+        if(health <= 0)
         {
-            currentTarget.GetComponent<Enemy>().health -= playerDamage;
+            GameObject animationInstance = Instantiate(dyingAnimation) as GameObject;
+            animationInstance.GetComponent<DyingAnimation>().PlayerDestroyed = true;
+            animationInstance.transform.position = transform.position;
+            animationInstance.transform.localScale = transform.localScale;
+            Destroy(gameObject);
         }
     }
 }

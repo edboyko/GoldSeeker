@@ -60,12 +60,14 @@ public class PlayerController : MonoBehaviour {
             }
             if (Input.GetKey(KeyCode.Space))
             {
-                player.Attack(true);
+                player.PlayerAttacking = true;
+                //player.Attack(true);
                 playerAnimator.SetBool("playerAttacking", true);
             }
             else if (Input.GetKeyUp(KeyCode.Space))
             {
-                player.Attack(false);
+                player.PlayerAttacking = false;
+                //player.Attack(false);
                 playerAnimator.SetBool("playerAttacking", false);
             }
         }
