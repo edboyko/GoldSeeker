@@ -49,7 +49,10 @@ public class Player : MonoBehaviour {
         }
         if (PlayerAttacking)
         {
-            victim.health -= playerDamage * Time.deltaTime;
+            if (victim)
+            {
+                victim.health -= playerDamage * Time.deltaTime;
+            }
         }
         DieIfHealthZero();
     }

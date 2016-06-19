@@ -1,41 +1,37 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(Enemy))]
-public class EnemyMage : MonoBehaviour {
-
-    private bool playerIsNear;
-
-    private Player player;
-    private Enemy enemy;
-
+public class EnemyMage : Enemy {
+    
     public GameObject missile;
 
-    public float xAttackThreshold = 4;
-    public float yAttackThreshold = 1;
-
-    void Start () {
-        player = GameObject.FindObjectOfType<Player>();
-        enemy = GetComponent<Enemy>();
+    override protected void Start () {
+        base.Start();
 	}
-	
-	void Update () {
+
+    override protected void Update ()
+    {
+        base.Update();
+    }
+
+    override protected void FindPlayer()
+    {
         if (PlayerWithinRange()[0] && PlayerWithinRange()[1])
         {
-            enemy.CurrentSpeed = 0;
+            CurrentSpeed = 0;
             playerIsNear = true;
-            if(player.transform.position.x > transform.position.x)
+            if (player.transform.position.x > transform.position.x)
             {
-                enemy.Direction = 1;
+                Direction = 1;
             }
             else
             {
-                enemy.Direction = -1;
+                Direction = -1;
             }
         }
         else
         {
             playerIsNear = false;
-            enemy.CurrentSpeed = enemy.defaultSpeed;
+            CurrentSpeed = defaultSpeed;
         }
 
         if (playerIsNear)
@@ -46,7 +42,7 @@ public class EnemyMage : MonoBehaviour {
         {
             GetComponent<Animator>().SetBool("casting", false);
         }
-	}
+    }
 
     public void CastFireBalls ()
     {
@@ -54,10 +50,8 @@ public class EnemyMage : MonoBehaviour {
         ball.transform.SetParent(transform);
     }
 
-    bool[] PlayerWithinRange()
+    override protected void OnTriggerEnter2D(Collider2D col)
     {
-        bool xDistance = Mathf.Abs(player.transform.position.x - transform.position.x) <= xAttackThreshold;
-        bool yDistance = Mathf.Abs(player.transform.position.y - transform.position.y) <= yAttackThreshold;
-        return new bool[2] {xDistance, yDistance};
-    }    
+        base.OnTriggerEnter2D(col);
+    }
 }

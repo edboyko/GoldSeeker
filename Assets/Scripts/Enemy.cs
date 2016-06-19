@@ -3,16 +3,21 @@ using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
+    protected bool playerIsNear;
+
+    public float xAttackThreshold = 1.5f;
+    public float yAttackThreshold = 1;
+
     // Moving variables
-    private float destinationRight;
-    private float destinationLeft;
+    protected float destinationRight;
+    protected float destinationLeft;
 
     public float Direction { get; set; }
     public float CurrentSpeed { get; set; }
 
     // Component variables
-    private Animator animator;
-    private Slider healthSlider;
+    protected Animator animator;
+    protected Slider healthSlider;
 
     // Property variables
     public float health = 100;
@@ -22,10 +27,14 @@ public class Enemy : MonoBehaviour
 
     public GameObject dyingAnimation;
 
-    private Player target;
+    protected Player target;
+
+    protected Player player;
     
-    void Start()
+    protected virtual void Start()
     {
+        player = GameObject.FindObjectOfType<Player>();
+
         animator = GetComponent<Animator>();
         healthSlider = GetComponentInChildren<Slider>();
 
@@ -36,7 +45,7 @@ public class Enemy : MonoBehaviour
         destinationLeft = transform.position.x - oneWayLength;
     }
     
-    void Update()
+    virtual protected void Update()
     {
         healthSlider.value = health;
 
@@ -49,11 +58,39 @@ public class Enemy : MonoBehaviour
             Direction = 1;
         }
 
+        FindPlayer();
+
         transform.position += new Vector3(CurrentSpeed * Time.deltaTime * Direction, 0, 0);
         transform.localScale = new Vector3(Direction, 1, 1);
         transform.rotation = Quaternion.identity;
 
         DieIfHealthZero();
+    }
+
+    protected virtual void FindPlayer()
+    {
+        if (PlayerWithinRange()[0] && PlayerWithinRange()[1])
+        {
+            //playerIsNear = true;
+            if (player.transform.position.x > transform.position.x)
+            {
+                Direction = 1;
+            }
+            else
+            {
+                Direction = -1;
+            }
+        }
+        //else
+        //{
+        //    playerIsNear = false;
+        //}        
+    }
+    protected bool[] PlayerWithinRange()
+    {
+        bool xDistance = Mathf.Abs(player.transform.position.x - transform.position.x) <= xAttackThreshold;
+        bool yDistance = Mathf.Abs(player.transform.position.y - transform.position.y) <= yAttackThreshold;
+        return new bool[2] { xDistance, yDistance };
     }
 
     void DieIfHealthZero()
@@ -107,7 +144,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter2D(Collider2D col)
+    protected virtual void OnTriggerEnter2D(Collider2D col)
     {
         if(col.gameObject == GameObject.FindGameObjectWithTag("Wall"))
         {
