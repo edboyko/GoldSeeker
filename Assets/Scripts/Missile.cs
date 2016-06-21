@@ -2,39 +2,30 @@
 
 public class Missile : MonoBehaviour {
 
-    private Enemy enemy;
     private float spawnTime;
+    private float livingTime = 3;
 
-    public float damage = 5;
-    public float speed = 15;
-    public float livingTime = 3;
+    protected float missileDirection;
 
+    protected float damage;
+    protected float speed;
     
-	void Start () {
-        enemy = GetComponentInParent<Enemy>();
-        spawnTime = Time.time;
-	}
-    
-    void Update()
+	virtual protected void Start ()
     {
-        transform.position += new Vector3(speed, 0) * Time.deltaTime * enemy.Direction;
+        spawnTime = Time.time;
+        transform.SetParent(GameObject.FindGameObjectWithTag("MissileContainer").transform);
+    }
+    
+    virtual protected void Update()
+    {
         DestroyAfter(livingTime);
+        transform.position += new Vector3(speed, 0) * Time.deltaTime * missileDirection;
     }
 
     void DestroyAfter(float flyingTime)
     {
         if (Time.time - spawnTime >= flyingTime)
         {
-            Destroy(gameObject);
-        }
-    }
-
-    void OnTriggerEnter2D(Collider2D col)
-    {
-        Player player = col.gameObject.GetComponent<Player>();
-        if (player)
-        {
-            player.health -= damage;
             Destroy(gameObject);
         }
     }

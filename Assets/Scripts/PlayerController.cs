@@ -6,11 +6,12 @@ public class PlayerController : MonoBehaviour {
     private Animator playerAnimator;
     private Player player;
 
-    private float direction;
+    public float Direction { get; set; }
     public bool grounded = true;
 
     void Start ()
     {
+        Direction = 1;
         player = GetComponent<Player>();
         playerRigidBody = GetComponent<Rigidbody2D>();
         playerAnimator = GetComponent<Animator>();
@@ -21,14 +22,14 @@ public class PlayerController : MonoBehaviour {
         {
             if (Input.GetKey(KeyCode.RightArrow))
             {
-                direction = 1;
+                Direction = 1;
             }
             else if (Input.GetKey(KeyCode.LeftArrow))
             {
-                direction = -1;
+                Direction = -1;
             }
-            transform.localScale = new Vector3(direction, 1, 1);
-            transform.position += Vector3.right * direction * player.speed * Time.deltaTime;
+            transform.localScale = new Vector3(Direction, 1, 1);
+            transform.position += Vector3.right * Direction * player.speed * Time.deltaTime;
             if(!player.isBat)
             {
                 playerAnimator.SetBool("playerWalking", true);
@@ -61,13 +62,11 @@ public class PlayerController : MonoBehaviour {
             if (Input.GetKey(KeyCode.Space))
             {
                 player.PlayerAttacking = true;
-                //player.Attack(true);
                 playerAnimator.SetBool("playerAttacking", true);
             }
             else if (Input.GetKeyUp(KeyCode.Space))
             {
                 player.PlayerAttacking = false;
-                //player.Attack(false);
                 playerAnimator.SetBool("playerAttacking", false);
             }
         }
@@ -102,6 +101,12 @@ public class PlayerController : MonoBehaviour {
                 player.TransformToBat(false, 1);
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            player.CastProjectile();
+        }
+
         transform.rotation = Quaternion.identity;
         transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, -30, 5), 0);
 	}
@@ -110,6 +115,4 @@ public class PlayerController : MonoBehaviour {
     {
         grounded = true;
     }
-
-
 }

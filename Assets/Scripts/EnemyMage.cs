@@ -3,8 +3,11 @@
 public class EnemyMage : Enemy {
     
     public GameObject missile;
+    
+    public float missileSpeed = 15;
 
-    override protected void Start () {
+    override protected void Start ()
+    {
         base.Start();
 	}
 
@@ -52,6 +55,9 @@ public class EnemyMage : Enemy {
 
     override protected void OnTriggerEnter2D(Collider2D col)
     {
-        base.OnTriggerEnter2D(col);
+        if (col.gameObject == GameObject.FindGameObjectWithTag("Wall"))
+        {
+            Direction = Direction * -1;
+        }
     }
 }

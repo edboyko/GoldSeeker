@@ -58,20 +58,24 @@ public class Enemy : MonoBehaviour
             Direction = 1;
         }
 
+        EnemyMove();
+
         FindPlayer();
 
+        DieIfHealthZero();
+    }
+
+    void EnemyMove()
+    {
         transform.position += new Vector3(CurrentSpeed * Time.deltaTime * Direction, 0, 0);
         transform.localScale = new Vector3(Direction, 1, 1);
         transform.rotation = Quaternion.identity;
-
-        DieIfHealthZero();
     }
 
     protected virtual void FindPlayer()
     {
         if (PlayerWithinRange()[0] && PlayerWithinRange()[1])
         {
-            //playerIsNear = true;
             if (player.transform.position.x > transform.position.x)
             {
                 Direction = 1;
@@ -81,16 +85,20 @@ public class Enemy : MonoBehaviour
                 Direction = -1;
             }
         }
-        //else
-        //{
-        //    playerIsNear = false;
-        //}        
     }
+
     protected bool[] PlayerWithinRange()
     {
-        bool xDistance = Mathf.Abs(player.transform.position.x - transform.position.x) <= xAttackThreshold;
-        bool yDistance = Mathf.Abs(player.transform.position.y - transform.position.y) <= yAttackThreshold;
-        return new bool[2] { xDistance, yDistance };
+        if (player)
+        {
+            bool xDistance = Mathf.Abs(player.transform.position.x - transform.position.x) <= xAttackThreshold;
+            bool yDistance = Mathf.Abs(player.transform.position.y - transform.position.y) <= yAttackThreshold;
+            return new bool[2] { xDistance, yDistance };
+        }
+        else
+        {
+            return new bool[2] { false, false };
+        }
     }
 
     void DieIfHealthZero()
@@ -101,27 +109,6 @@ public class Enemy : MonoBehaviour
             animationInstance.transform.position = transform.position;
             animationInstance.transform.localScale = transform.localScale;
             Destroy(gameObject);
-        }
-    }
-
-    void DestroyObject()
-    {
-        Destroy(gameObject);
-    }
-
-    void OnTriggerStay2D(Collider2D col)
-    {
-        Player player = col.gameObject.GetComponent<Player>();
-        if (player)
-        {
-            target = player;
-            CurrentSpeed = 0;
-            animator.SetBool("attacking", true);
-        }
-        else
-        {
-            target = null;
-            animator.SetBool("attacking", false);
         }
     }
 
@@ -146,9 +133,16 @@ public class Enemy : MonoBehaviour
 
     protected virtual void OnTriggerEnter2D(Collider2D col)
     {
-        if(col.gameObject == GameObject.FindGameObjectWithTag("Wall"))
+        Player player = col.gameObject.GetComponent<Player>();
+        if (col.gameObject == GameObject.FindGameObjectWithTag("Wall"))
         {
             Direction = Direction * -1;
+        }
+        if (player)
+        {
+            target = player;
+            CurrentSpeed = 0;
+            animator.SetBool("attacking", true);
         }
     }
 }

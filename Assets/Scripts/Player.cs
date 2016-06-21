@@ -3,13 +3,17 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
 
-    public float health, jumpForce, speed, playerDamage, batGravityScale;
+    public float health, jumpForce, speed, playerDamage, spellDamage, missileSpeed, batGravityScale;
 
     private float mana = 100;
     public float manaDrainRate = 20;
     public float manaRegen = 5;
 
     public GameObject dyingAnimation;
+    public GameObject missile;
+
+    public float fireFrequency = 2.5f;
+    private float lastLaunchTime;
     
     private GameObject currentTarget;
     private Animator animator;
@@ -24,6 +28,7 @@ public class Player : MonoBehaviour {
 
     void Start()
     {
+        lastLaunchTime = fireFrequency * -1;
         animator = GetComponent<Animator>();
         manaSlider = GameObject.Find("ManaSlider").GetComponent<Slider>();
         healthSlider = GameObject.Find("HealthSlider").GetComponent<Slider>();
@@ -55,6 +60,16 @@ public class Player : MonoBehaviour {
             }
         }
         DieIfHealthZero();
+    }
+
+    public void CastProjectile()
+    {
+        if(Time.time - lastLaunchTime >= fireFrequency)
+        {
+            GameObject projectile = Instantiate(missile, transform.position, Quaternion.identity) as GameObject;
+            projectile.transform.SetParent(transform);
+            lastLaunchTime = Time.time;
+        }
     }
 
     public void TransformToBat (bool trueOrFalse, float gravityScale)
